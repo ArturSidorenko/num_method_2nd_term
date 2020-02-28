@@ -74,3 +74,59 @@ double orthogonality_check(unsigned N) {
     }
     return res;
 }
+
+void print_eigenv(unsigned N) {
+    FILE *f;
+    f = fopen("eigenvals.txt", "w");
+
+
+    fprintf(f, "Number      Discrete        Continious\n");
+
+    for(unsigned i = 0; i <= (N-2); i++) {
+        fprintf(f, "%d       ", i);
+        fprintf(f, "%9.5lf   ", eigenvalue(N, i));
+        fprintf(f, "%9.5lf   ", (PI * 0.5 + PI*(i)) * (PI * 0.5 + PI*(i)));
+        fprintf(f, "\n");
+    }
+
+    fclose(f);
+}
+
+void print_gramian(unsigned N) {
+    FILE *f;
+    f = fopen("Gramian.txt", "w");
+
+
+    for(unsigned i = 0; i <= (N-2); i++) {
+        for(unsigned j = 0; j <= (N-2); j++) {
+            fprintf(f, " %9.5e ", scal_product(N, i, j));
+        }
+        fprintf(f, "\n");
+    }
+
+    fclose(f);
+
+}
+void print_vector(unsigned N, unsigned q) {
+    FILE *f;
+    f = fopen("Vec_disc.txt", "w");
+    const double h = 2./(2*N-1);
+
+    for(unsigned j = 0; j <=N; j++) {
+        fprintf(f, " %9.5lf  ", h*j);
+        fprintf(f, " %9.5lf  ", eigenvector(N, q, j));
+        fprintf(f, " %9.5lf  ", sqrt(2) * sin(j*h * (PI*0.5 + PI*q)));
+        fprintf(f, "\n");
+    }
+
+    fclose(f);
+    FILE *g;
+    g = fopen("Vec_cont.txt", "w");
+    for(unsigned j = 0; j <=300; j++) {
+        fprintf(g, " %9.5lf  ", j * (1./300));
+        fprintf(g, " %9.5lf  ", sqrt(2) * sin(j*(1./300) * (PI*0.5 + PI*q)));
+        fprintf(g, "\n");
+    }
+    fclose(g);
+
+}

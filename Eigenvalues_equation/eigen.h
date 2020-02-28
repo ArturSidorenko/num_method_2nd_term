@@ -6,7 +6,7 @@
 #include<cmath>
 #include<exception>
 #include<algorithm>
-
+#include<string>
 
 /*
  * Eigenvalues and eigenvectors 
@@ -32,6 +32,10 @@ double eq_res_all(unsigned N);
 
 //checks difference between Gramian and identity matrices
 double orthogonality_check(unsigned N);
+
+void print_eigenv(unsigned N);
+void print_gramian(unsigned N);
+void print_vector(unsigned N, unsigned q);
 
 
 
