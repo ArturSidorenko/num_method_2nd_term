@@ -28,6 +28,13 @@ void new_step(double *ynew, const double *y, const double *yold, double x, doubl
     for(int i = 0; i < N; i++) ynew[i] = 2 * h * ynew[i] + yold[i];
 }
 
+void newest_step(double *ynew, const double *y, const double *yold, double x, double h, int N) {
+    fun(ynew, yold, x-h, N);
+
+    for(int i = 0; i < N; i++) ynew[i] = h * ynew[i] - yold[i] + 2 * y[i];
+}
+
+
 void solve(double ***ans, size_t *points, double h, int N, double x0, const double* y0, double xend) {
    double x = x0;
    size_t m = (xend - x0) / h + 1; //now many points are there. (xe - x0) / h is a number of h-segments one can fit
@@ -84,6 +91,35 @@ void new_solve(double ***ans, size_t *points, double h, int N, double x0, const 
    *points = m;
 }
 
+void newest_solve(double ***ans, size_t *points, double h, int N, double x0, const double* y0, double xend) {
+   double x = x0;
+   size_t m = (xend - x0) / h + 1; //now many points are there. (xe - x0) / h is a number of h-segments one can fit
+
+
+   auto y = new double*[m];
+   for(size_t i = 0; i < m; i++) y[i] = new double [N];
+
+   //rewrite y0
+   try{
+        for(int i = 0; i < N; i++) y[0][i] = y0[i];
+   }
+   catch(...) {
+       throw std::invalid_argument("the y0 is bad");
+   }
+
+   //calculate y1
+   fexact(y[1], x + h, N);
+
+   //make steps
+   for(size_t i = 2; i < m; i++) {
+       newest_step(y[i], y[i-1], y[i-2], x, h, N);
+       x+=h;
+   }
+
+   *ans = y;
+   *points = m;
+}
+
 
 
 void write(const char *name, int N, int m, double x0, double h, double **y) {
@@ -95,8 +131,7 @@ void write(const char *name, int N, int m, double x0, double h, double **y) {
    fprintf(fi, "      x  ");
    for(int i = 1; i <= N; i++) fprintf(fi, "     y_%d      ", i);
    for(int i = 1; i <= N; i++) fprintf(fi, "yexact_%d      ", i);
-   for(int i = 1
-; i <= N; i++) fprintf(fi, "delta_%d       ", i);
+   for(int i = 1; i <= N; i++) fprintf(fi, "delta_%d       ", i);
 
    fprintf(fi, "\n");
 

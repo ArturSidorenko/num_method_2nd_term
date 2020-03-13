@@ -27,7 +27,9 @@ void solve(double ***ans, size_t *points, double h, int N, double x0, const doub
 
 //other versions to carry out solution via two previous values of y
 void new_step(double *ynew, const double *y, const double *yold, double x, double h, int N);
+void newest_step(double *ynew, const double *y, const double *yold, double x, double h, int N);
 void new_solve(double ***ans, size_t *points, double h, int N, double x0, const double* y0, double xend); 
+void newest_solve(double ***ans, size_t *points, double h, int N, double x0, const double* y0, double xend); 
 
 //awesome writing
 void write(const char *name, int N, int m, double x0, double h, double **y);
